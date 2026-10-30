@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "EOD Image Maker",
+  "version": "5.1.0",
+  "description": "Icon par click karo, naye tab me EOD form bharo aur live preview me apni EOD image dekho. Data apne-aap save hota hai.",
+  "action": {
+    "default_title": "EOD Image Maker",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

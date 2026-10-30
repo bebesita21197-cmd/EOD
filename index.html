@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EOD Image Maker</title>
+  <link rel="icon" type="image/png" href="icon48.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="shell" id="shell">
+
+    <header class="top">
+      <button id="styleBtn" type="button" class="style-btn" aria-expanded="false" aria-controls="drawer" title="Colour, font, size, layout ke saare options">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16"/>
+          </g>
+          <g fill="currentColor"><circle cx="15" cy="7" r="2.6"/><circle cx="8" cy="12" r="2.6"/><circle cx="16.5" cy="17" r="2.6"/></g>
+        </svg>
+        <span>Style</span>
+      </button>
+      <h1>EOD Image Maker</h1>
+      <div class="who" id="who"></div>
+      <div class="keys">Live preview &nbsp;·&nbsp; data har second apne-aap save hota hai &nbsp;·&nbsp; arrow keys / Enter se agle box me jao</div>
+    </header>
+
+    <main class="sheet" id="sheet">
+
+      <!-- Section 1: kaun, kab, kahan -->
+      <section class="col col-a" id="colA">
+        <div class="fitbox" id="fitA">
+          <h2 class="col-h">Details</h2>
+
+          <div class="field panel p-lav">
+            <label class="lbl" for="name">Name</label>
+            <input type="text" id="name" placeholder="Apna naam likho" autocomplete="off">
+          </div>
+
+          <div class="field panel p-sky">
+            <label class="lbl" for="date">Date</label>
+            <input type="date" id="date">
+          </div>
+
+          <div class="field panel p-mint">
+            <div class="lbl">Platform</div>
+            <div id="chips" class="chips"></div>
+          </div>
+
+          <!-- Columns: upar-neeche order badlo, kisi bhi jagah (+) se nayi column -->
+          <div id="colStrip" class="col-strip panel p-rose">
+            <div class="lbl">Columns <small>(▲▼ order · + nayi)</small>
+              <button id="colAddTop" type="button" class="ins push-r" title="Sabse upar nayi column jodo">+</button>
+            </div>
+            <div id="colNames" class="col-tags"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="vsep" data-sep="1" role="separator" aria-orientation="vertical" tabindex="0" title="Drag karke section chhota/bada karo (double-click = default)"></div>
+
+      <!-- Section 2: numbers -->
+      <section class="col col-b" id="colB">
+        <h2 class="col-h">Platform data</h2>
+
+        <!-- Sirf yahi scroll hota hai -->
+        <div id="cards" class="cards"></div>
+
+        <!-- Neeche fixed: Grand Total + Additional Work -->
+        <div class="col-foot">
+          <div class="field panel p-lemon">
+            <div class="lbl">Grand Total <small>(khali = auto)</small></div>
+            <div id="grand" class="grid4"></div>
+          </div>
+          <div class="field panel p-teal">
+            <label class="lbl" for="additional">Additional Work</label>
+            <div class="addrow">
+              <input type="text" id="additional" placeholder="e.g. PMQC, Dashboard Update">
+              <label class="chk"><input type="checkbox" id="ai" checked> <span>AI look</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="vsep" data-sep="2" role="separator" aria-orientation="vertical" tabindex="0" title="Drag karke section chhota/bada karo (double-click = default)"></div>
+
+      <!-- Section 3: image -->
+      <section class="col col-c">
+        <h2 class="col-h">Live preview</h2>
+
+        <div id="viewport" class="viewport">
+          <div id="placeholder" class="placeholder hidden"></div>
+          <div id="stage" class="stage hidden">
+            <canvas id="out"></canvas>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="reset" type="button" class="ghost" title="Sirf data saaf hoga. Design / formatting wahi rahegi.">Reset data</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Style drawer: side se slide hota hai. 4 tab: Colour / Text / Layout / Show -->
+    <aside id="drawer" class="drawer" aria-label="Style settings">
+      <div class="drawer-head">
+        <div>
+          <h2>Style</h2>
+          <small class="muted">Har chhota option yahin hai</small>
+        </div>
+        <span class="sp"></span>
+        <button id="setDefault" type="button" class="ghost sm" title="Abhi ka design aapka default bana do">Set as default</button>
+        <button id="styleReset" type="button" class="ghost sm" title="Aapka saved default design wapas lagao">Default</button>
+        <button id="factoryReset" type="button" class="ghost sm hidden" title="Original design par jao aur saved default hata do">Factory</button>
+        <button id="drawerClose" type="button" class="x" title="Band karo">×</button>
+      </div>
+
+      <div class="tabs" id="tabs" role="tablist">
+        <button type="button" class="tab on" data-tab="colour" role="tab">Colour</button>
+        <button type="button" class="tab" data-tab="text" role="tab">Text</button>
+        <button type="button" class="tab" data-tab="layout" role="tab">Layout</button>
+        <button type="button" class="tab" data-tab="show" role="tab">Show</button>
+      </div>
+
+      <div class="drawer-body" id="drawerBody">
+        <div class="fitbox" id="fitD">
+
+          <!-- COLOUR -->
+          <div class="tabpane on" data-pane="colour">
+            <div class="panel p-blue">
+              <div class="lbl">Main colour <small id="colorHex"></small>
+                <button id="colorReset" type="button" class="ghost sm push-r" title="Default colour par jao">Default</button>
+              </div>
+              <div id="colorPrev" class="cprev"></div>
+              <div id="swatches" class="swatches" aria-label="Ready colours"></div>
+              <label class="sl"><span>Shade</span><input type="range" id="hue" min="0" max="360" step="1"><output id="hueV"></output></label>
+              <label class="sl"><span>Intensity</span><input type="range" id="sat" min="0" max="100" step="1"><output id="satV"></output></label>
+              <label class="sl"><span>Brightness</span><input type="range" id="lit" min="10" max="50" step="1"><output id="litV"></output></label>
+            </div>
+
+            <div class="panel p-green">
+              <label class="chk"><input type="checkbox" id="multi" checked> <span>Multi colour <small class="muted">(main colour se bane rang)</small></span></label>
+              <div id="multiOpts" class="multi-opts">
+                <div id="palPrev" class="palprev" title="Is main colour se bane 8 rang"></div>
+                <label class="sl"><span>Rang-mel</span><select id="harmony" class="sel"></select></label>
+                <label class="sl"><span>Spread</span><input type="range" id="spread" min="0" max="100" step="1"><output id="spreadV"></output></label>
+              </div>
+            </div>
+
+            <div class="panel p-peach">
+              <div class="lbl">Background</div>
+              <div id="bgSeg" class="seg" data-key="bg"></div>
+            </div>
+          </div>
+
+          <!-- TEXT -->
+          <div class="tabpane" data-pane="text">
+            <div class="panel p-peach">
+              <div class="typo-head">
+                <span></span><div class="lbl">Font</div><div class="lbl">Size</div><div class="lbl" title="Bold">B</div>
+              </div>
+              <div id="typo" class="typo"></div>
+            </div>
+            <div class="panel p-lav">
+              <div class="lbl">Platform naam ki jagah</div>
+              <div id="alignSeg" class="seg" data-key="nameAlign"></div>
+            </div>
+          </div>
+
+          <!-- LAYOUT -->
+          <div class="tabpane" data-pane="layout">
+            <div class="panel p-sky">
+              <div class="lbl">Naap aur shape</div>
+              <label class="sl"><span>Row height</span><input type="range" data-opt="rowH" min="28" max="60" step="1"><output></output></label>
+              <label class="sl"><span>Row gap</span><input type="range" data-opt="rowGap" min="0" max="30" step="1"><output></output></label>
+              <label class="sl"><span>Roundness</span><input type="range" data-opt="radius" min="0" max="24" step="1"><output></output></label>
+              <label class="sl"><span>Shadow</span><input type="range" data-opt="shadow" min="0" max="150" step="5"><output></output></label>
+            </div>
+            <div class="panel p-mint">
+              <div class="lbl">Image quality <small>(bada = saaf, file bhaari)</small></div>
+              <div id="scaleSeg" class="seg" data-key="scale"></div>
+            </div>
+          </div>
+
+          <!-- SHOW -->
+          <div class="tabpane" data-pane="show">
+            <div class="panel p-teal">
+              <div class="lbl">Kya dikhana hai</div>
+              <div id="toggles" class="toggles"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="render.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
