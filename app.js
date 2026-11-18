@@ -14,10 +14,10 @@
 
   // Base columns: inka naam fixed hai, par order badal sakte ho. rule = Grand Total auto rule ('max' / 'sum')
   const BASE_COLS = [
-    { id: 'b0', name: 'Title Scaned', rule: 'max' },
+    { id: 'b0', name: 'Title Scaned', rule: 'sum' },
     { id: 'b1', name: 'Title Found', rule: 'sum' },
     { id: 'b2', name: 'URL', rule: 'sum' },
-    { id: 'b3', name: 'Channel/Domain', rule: 'max' }
+    { id: 'b3', name: 'Channel/Domain', rule: 'sum' }
   ];
   const defaultColumns = () => BASE_COLS.map((c) => ({ id: c.id, name: c.name, base: true, rule: c.rule }));
 
